@@ -10,6 +10,10 @@ class EncryptGcmResponse
 {
     public function handle(Request $request, Closure $next)
     {
+        if ($request->isMethod('GET') && $request->is('api/auth/verify-email')) {
+            return $next($request);
+        }
+
         $resp = $next($request);
 
         $aad = $request->attributes->get('aad');
