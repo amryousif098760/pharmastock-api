@@ -11,7 +11,7 @@ class DecryptGcmRequest
     public function handle(Request $request, Closure $next)
     {
         if ($request->isMethod('GET') && $request->is('api/auth/verify-email')) {
-           S return $next($request);
+            return $next($request);
         }
         $appId = $request->header('X-App-Id', '');
         $ts = $request->header('X-TS', '');
