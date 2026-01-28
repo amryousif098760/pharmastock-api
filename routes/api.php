@@ -11,7 +11,13 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/status', [AuthController::class, 'status']);
 Route::post('/auth/resend-verification', [AuthController::class, 'resendVerification']);
-Route::get('/auth/verify-email', [AuthController::class, 'verifyEmailLink']); // NOT encrypted
+Route::get('/auth/verify-email', [AuthController::class, 'verifyEmailLink'])
+    ->withoutMiddleware([
+        \App\Http\Middleware\DecryptGcmRequest::class,
+        \App\Http\Middleware\EncryptGcmResponse::class,
+        \App\Http\Middleware\VerifyNonceAndTimestamp::class,
+    ]);
+
 
 // Admin
 Route::post('/admin/warehouses/create', [AdminController::class, 'createWarehouse']);
