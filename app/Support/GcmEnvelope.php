@@ -18,7 +18,7 @@ class GcmEnvelope
             throw new Exception('Invalid ENC_KEY_B64');
         }
 
-        foreach (['iv', 'tag', 'ciphertext'] as $k) {
+        foreach (['iv','tag','ciphertext'] as $k) {
             if (!isset($env[$k]) || $env[$k] === '') {
                 throw new Exception("Missing {$k}");
             }
