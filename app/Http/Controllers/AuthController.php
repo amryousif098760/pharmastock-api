@@ -28,9 +28,31 @@ class AuthController extends Controller
         $lng = $loc['lng'] ?? null;
         $addr = trim($loc['addressText'] ?? '');
 
-        if (!$name || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) < 6 || !$phName) {
-            return response()->json(['ok'=>false,'message'=>'Invalid input'], 200);
-        }
+        $errors = [];
+
+        if (!$name) {
+    $errors['name'] = 'Name is required';
+}
+
+if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $errors['email'] = 'Invalid email address';
+}
+
+if (strlen($password) < 6) {
+    $errors['password'] = 'Password must be at least 6 characters';
+}
+
+if (!$phName) {
+    $errors['phName'] = 'Phone name is required';
+}
+
+if (!empty($errors)) {
+    return response()->json([
+        'ok' => false,
+        'message' => array_values($errors)[0] 
+    ], 200);
+}
+
 
         if (User::where('email',$email)->exists()) {
             return response()->json(['ok'=>false,'message'=>'Email already exists'], 200);
