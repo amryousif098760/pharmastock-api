@@ -51,7 +51,7 @@ if (!empty($errors)) {
         'ok' => false,
         'message' => array_values($errors)[0],
         'env_app_id'=>env('ENC_APP_ID'),
-            'has_env_key'=> (bool) env('ENC_KEY_B64'),
+            'has_env_key'=> env('ENC_KEY_B64'),
     ], 200);
 }
 
