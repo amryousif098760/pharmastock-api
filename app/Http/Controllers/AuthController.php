@@ -49,13 +49,14 @@ if (!$phName) {
 if (!empty($errors)) {
     return response()->json([
         'ok' => false,
-        'message' => array_values($errors)[0] 
+        'message' => array_values($errors)[0],
+        'p' => $p,
     ], 200);
 }
 
 
         if (User::where('email',$email)->exists()) {
-            return response()->json(['ok'=>false,'message'=>'Email already exists','p' => $p,], 200);
+            return response()->json(['ok'=>false,'message'=>'Email already exists'], 200);
         }
 
         $verifyToken = Str::random(60);
