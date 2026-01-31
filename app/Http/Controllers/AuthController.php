@@ -100,41 +100,42 @@ class AuthController extends Controller
     }
 
     public function status(Request $request)
-    {
-        $u = $request->attributes->get('auth_user');
-        if (!$u) return response()->json(['ok'=>false,'message'=>'Unauthorized'], 200);
+{
+    $u = $request->user();
+    if (!$u) return response()->json(['ok'=>false,'message'=>'Unauthorized'], 200);
 
-        return response()->json([
-            'ok'=>true,
-            'data'=>[
-                'emailVerified'=>!is_null($u->email_verified_at),
-                'approvalStatus'=>$u->approval_status,
-                'role'=>$u->role,
-            ]
-        ], 200);
+    return response()->json([
+        'ok'=>true,
+        'data'=>[
+            'emailVerified'=>!is_null($u->email_verified_at),
+            'approvalStatus'=>$u->approval_status,
+            'role'=>$u->role,
+        ]
+    ], 200);
+}
+
+public function resendVerification(Request $request)
+{
+    $u = $request->user();
+    if (!$u) return response()->json(['ok'=>false,'message'=>'Unauthorized'], 200);
+
+    if (!is_null($u->email_verified_at)) {
+        return response()->json(['ok'=>true,'message'=>'Already verified'], 200);
     }
 
-    public function resendVerification(Request $request)
-    {
-        $u = $request->attributes->get('auth_user');
-        if (!$u) return response()->json(['ok'=>false,'message'=>'Unauthorized'], 200);
-
-        if (!is_null($u->email_verified_at)) {
-            return response()->json(['ok'=>true,'message'=>'Already verified'], 200);
-        }
-
-        if (!$u->email_verify_token) {
-            $u->email_verify_token = Str::random(60);
-            $u->save();
-        }
-
-        $link = url("/api/auth/verify-email?token={$u->email_verify_token}");
-        Mail::raw("Verify your email: {$link}", function($m) use ($u) {
-            $m->to($u->email)->subject("Verify Email");
-        });
-
-        return response()->json(['ok'=>true,'message'=>'Verification email resent'], 200);
+    if (!$u->email_verify_token) {
+        $u->email_verify_token = Str::random(60);
+        $u->save();
     }
+
+    $link = url("/api/auth/verify-email?token={$u->email_verify_token}");
+    Mail::raw("Verify your email: {$link}", function($m) use ($u) {
+        $m->to($u->email)->subject("Verify Email");
+    });
+
+    return response()->json(['ok'=>true,'message'=>'Verification email resent'], 200);
+}
+
 
     // NOT encrypted (opened from email)
     public function verifyEmailLink(Request $request)
