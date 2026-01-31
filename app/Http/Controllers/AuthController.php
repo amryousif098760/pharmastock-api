@@ -129,12 +129,38 @@ public function resendVerification(Request $request)
     }
 
     $link = url("/api/auth/verify-email?token={$u->email_verify_token}");
-    Mail::raw("Verify your email: {$link}", function($m) use ($u) {
-        $m->to($u->email)->subject("Verify Email");
-    });
 
-    return response()->json(['ok'=>true,'message'=>'Verification email resent'], 200);
+    try {
+        $t0 = microtime(true);
+
+        Mail::raw("Verify your email: {$link}", function($m) use ($u) {
+            $m->to($u->email)->subject("Verify Email");
+        });
+
+        $ms = (int)round((microtime(true) - $t0) * 1000);
+
+        return response()->json([
+            'ok'=>true,
+            'message'=>'Verification email resent',
+            'ms'=>$ms
+        ], 200);
+
+    } catch (\Throwable $e) {
+        return response()->json([
+            'ok'=>false,
+            'message'=>'Mail send failed',
+            'error'=>$e->getMessage(),
+            'mail'=>[
+                'host'=>config('mail.mailers.smtp.host'),
+                'port'=>config('mail.mailers.smtp.port'),
+                'encryption'=>config('mail.mailers.smtp.encryption'),
+                'from'=>config('mail.from.address'),
+            ],
+            'verify_link'=>$link
+        ], 200);
+    }
 }
+
 
 
     // NOT encrypted (opened from email)
