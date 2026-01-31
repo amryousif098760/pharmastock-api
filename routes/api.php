@@ -22,11 +22,22 @@ Route::post('/admin/medicines/create', [AdminController::class, 'createMedicine'
 Route::post('/admin/medicines/update', [AdminController::class, 'updateMedicine'])->middleware(DecryptGcmRequest::class);
 Route::post('/admin/medicines/delete', [AdminController::class, 'deleteMedicine'])->middleware(DecryptGcmRequest::class);
 
-Route::post('/inventory/warehouses', [InventoryController::class, 'warehouses'])->middleware(DecryptGcmRequest::class);
-Route::post('/inventory/medicines', [InventoryController::class, 'medicines'])->middleware(DecryptGcmRequest::class);
-Route::post('/inventory/shortages', [InventoryController::class, 'shortages'])->middleware(DecryptGcmRequest::class);
-Route::post('/inventory/update-onhand', [InventoryController::class, 'updateOnHand'])->middleware(DecryptGcmRequest::class);
-Route::post('/inventory/set-minstock', [InventoryController::class, 'setMinStock'])->middleware(DecryptGcmRequest::class);
+
+Route::post('/inventory/warehouses', [InventoryController::class, 'warehouses'])
+    ->middleware(['auth:sanctum', DecryptGcmRequest::class]);
+
+Route::post('/inventory/medicines', [InventoryController::class, 'medicines'])
+    ->middleware(['auth:sanctum', DecryptGcmRequest::class]);
+
+Route::post('/inventory/shortages', [InventoryController::class, 'shortages'])
+    ->middleware(['auth:sanctum', DecryptGcmRequest::class]);
+
+Route::post('/inventory/update-onhand', [InventoryController::class, 'updateOnHand'])
+    ->middleware(['auth:sanctum', DecryptGcmRequest::class]);
+
+Route::post('/inventory/set-minstock', [InventoryController::class, 'setMinStock'])
+    ->middleware(['auth:sanctum', DecryptGcmRequest::class]);
+
 
 Route::post('/orders/create', [OrdersController::class, 'create'])->middleware(DecryptGcmRequest::class);
 Route::post('/orders/create-from-shortages', [OrdersController::class, 'createFromShortages'])->middleware(DecryptGcmRequest::class);
