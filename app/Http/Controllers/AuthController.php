@@ -16,14 +16,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $p = $this->dec($request);
-        return response()->json([
-    'ok' => false,
-    'debug' => [
-        'dec_attr' => $request->attributes->get('dec'),
-        'all_attrs' => $request->attributes->all(),
-        'path_info' => $request->getPathInfo(),
-    ]
-], 200);
+        
 
 
         $email = strtolower(trim($p['email'] ?? ''));
