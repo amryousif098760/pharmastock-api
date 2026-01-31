@@ -14,6 +14,15 @@ class InventoryController extends Controller
 
     private function gateUser(Request $request)
 {
+    return response()->json([
+    'ok' => false,
+    'debug' => [
+        'auth_header' => $request->header('Authorization'),
+        'bearer' => $request->bearerToken(),
+        'user' => $request->user()?->email,
+    ],
+], 200);
+
     $u = $request->user();
     if (!$u) return [null, response()->json(['ok'=>false,'message'=>'Unauthorized'],200)];
     if (is_null($u->email_verified_at)) return [null, response()->json(['ok'=>false,'message'=>'Email not verified'],200)];
