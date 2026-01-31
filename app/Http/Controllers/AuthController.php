@@ -14,10 +14,9 @@ class AuthController extends Controller
     private function dec(Request $r): array { return $r->attributes->get('dec', []); }
 
     public function register(Request $request)
-    {
+{
+    try {
         $p = $this->dec($request);
-        
-
 
         $email = strtolower(trim($p['email'] ?? ''));
         $password = (string)($p['password'] ?? '');
@@ -30,11 +29,9 @@ class AuthController extends Controller
         $lng = $loc['lng'] ?? null;
         $addr = trim($loc['addressText'] ?? '');
 
-       if (!$name || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) < 6 || !$phName) {
+        if (!$name || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) < 6 || !$phName) {
             return response()->json(['ok'=>false,'message'=>'Invalid input'], 200);
         }
-
-
 
         if (User::where('email',$email)->exists()) {
             return response()->json(['ok'=>false,'message'=>'Email already exists'], 200);
@@ -61,12 +58,30 @@ class AuthController extends Controller
         ]);
 
         $link = url("/api/auth/verify-email?token={$verifyToken}");
-        Mail::raw("Verify your email: {$link}", function($m) use ($email) {
-            $m->to($email)->subject("Verify Email");
-        });
+
+        try {
+            Mail::raw("Verify your email: {$link}", function($m) use ($email) {
+                $m->to($email)->subject("Verify Email");
+            });
+        } catch (\Throwable $e) {
+            return response()->json([
+                'ok'=>true,
+                'message'=>'Registered but email failed',
+                'mail_error'=>$e->getMessage(),
+                'verify_link'=>$link
+            ], 200);
+        }
 
         return response()->json(['ok'=>true,'message'=>'Registered. Verification email sent.'], 200);
+
+    } catch (\Throwable $e) {
+        return response()->json([
+            'ok'=>false,
+            'message'=>'Server error',
+            'error'=>$e->getMessage(),
+        ], 200);
     }
+}
 
     public function login(Request $request)
     {
