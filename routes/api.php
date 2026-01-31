@@ -8,9 +8,14 @@ use App\Http\Controllers\OrdersController;
 use App\Http\Middleware\DecryptGcmRequest;
 
 Route::post('/auth/register', [AuthController::class, 'register'])->middleware(DecryptGcmRequest::class);
-Route::post('/auth/login', [AuthController::class, 'login'])->middleware(DecryptGcmRequest::class);
-Route::post('/auth/status', [AuthController::class, 'status'])->middleware(DecryptGcmRequest::class);
-Route::post('/auth/resend-verification', [AuthController::class, 'resendVerification'])->middleware(DecryptGcmRequest::class);
+Route::post('/auth/login', [AuthController::class, 'login'])
+    ->middleware(\App\Http\Middleware\DecryptGcmRequest::class);
+
+Route::post('/auth/status', [AuthController::class, 'status'])
+    ->middleware('auth:sanctum');
+
+Route::post('/auth/resend-verification', [AuthController::class, 'resendVerification'])
+    ->middleware('auth:sanctum');
 
 Route::post('/admin/warehouses/create', [AdminController::class, 'createWarehouse'])->middleware(DecryptGcmRequest::class);
 Route::post('/admin/medicines/create', [AdminController::class, 'createMedicine'])->middleware(DecryptGcmRequest::class);
