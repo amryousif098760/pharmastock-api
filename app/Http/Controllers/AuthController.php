@@ -50,7 +50,8 @@ if (!empty($errors)) {
     return response()->json([
         'ok' => false,
         'message' => array_values($errors)[0],
-        'p' => $p,
+        'env_app_id'=>env('ENC_APP_ID'),
+            'has_env_key'=> (bool) env('ENC_KEY_B64'),
     ], 200);
 }
 
