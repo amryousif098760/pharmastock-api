@@ -5,28 +5,25 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\OrdersController;
+use App\Http\Middleware\DecryptGcmRequest;
 
-Route::middleware([\App\Http\Middleware\DecryptGcmRequest::class])->group(function () {
+Route::post('/auth/register', [AuthController::class, 'register'])->middleware(DecryptGcmRequest::class);
+Route::post('/auth/login', [AuthController::class, 'login'])->middleware(DecryptGcmRequest::class);
+Route::post('/auth/status', [AuthController::class, 'status'])->middleware(DecryptGcmRequest::class);
+Route::post('/auth/resend-verification', [AuthController::class, 'resendVerification'])->middleware(DecryptGcmRequest::class);
 
-    Route::post('/auth/register', [AuthController::class, 'register']);
-    Route::post('/auth/login', [AuthController::class, 'login']);
-    Route::post('/auth/status', [AuthController::class, 'status']);
-    Route::post('/auth/resend-verification', [AuthController::class, 'resendVerification']);
+Route::post('/admin/warehouses/create', [AdminController::class, 'createWarehouse'])->middleware(DecryptGcmRequest::class);
+Route::post('/admin/medicines/create', [AdminController::class, 'createMedicine'])->middleware(DecryptGcmRequest::class);
+Route::post('/admin/medicines/update', [AdminController::class, 'updateMedicine'])->middleware(DecryptGcmRequest::class);
+Route::post('/admin/medicines/delete', [AdminController::class, 'deleteMedicine'])->middleware(DecryptGcmRequest::class);
 
-    Route::post('/admin/warehouses/create', [AdminController::class, 'createWarehouse']);
-    Route::post('/admin/medicines/create', [AdminController::class, 'createMedicine']);
-    Route::post('/admin/medicines/update', [AdminController::class, 'updateMedicine']);
-    Route::post('/admin/medicines/delete', [AdminController::class, 'deleteMedicine']);
+Route::post('/inventory/warehouses', [InventoryController::class, 'warehouses'])->middleware(DecryptGcmRequest::class);
+Route::post('/inventory/medicines', [InventoryController::class, 'medicines'])->middleware(DecryptGcmRequest::class);
+Route::post('/inventory/shortages', [InventoryController::class, 'shortages'])->middleware(DecryptGcmRequest::class);
+Route::post('/inventory/update-onhand', [InventoryController::class, 'updateOnHand'])->middleware(DecryptGcmRequest::class);
+Route::post('/inventory/set-minstock', [InventoryController::class, 'setMinStock'])->middleware(DecryptGcmRequest::class);
 
-    Route::post('/inventory/warehouses', [InventoryController::class, 'warehouses']);
-    Route::post('/inventory/medicines', [InventoryController::class, 'medicines']);
-    Route::post('/inventory/shortages', [InventoryController::class, 'shortages']);
-    Route::post('/inventory/update-onhand', [InventoryController::class, 'updateOnHand']);
-    Route::post('/inventory/set-minstock', [InventoryController::class, 'setMinStock']);
-
-    Route::post('/orders/create', [OrdersController::class, 'create']);
-    Route::post('/orders/create-from-shortages', [OrdersController::class, 'createFromShortages']);
-    Route::post('/orders/list', [OrdersController::class, 'list']);
-    Route::post('/orders/details', [OrdersController::class, 'details']);
-
-});
+Route::post('/orders/create', [OrdersController::class, 'create'])->middleware(DecryptGcmRequest::class);
+Route::post('/orders/create-from-shortages', [OrdersController::class, 'createFromShortages'])->middleware(DecryptGcmRequest::class);
+Route::post('/orders/list', [OrdersController::class, 'list'])->middleware(DecryptGcmRequest::class);
+Route::post('/orders/details', [OrdersController::class, 'details'])->middleware(DecryptGcmRequest::class);
