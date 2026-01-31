@@ -16,10 +16,10 @@ class OrdersController extends Controller
 
     private function gateUser(Request $request)
     {
-        $u = $request->attributes->get('auth_user');
+        $u = $request->user();
         if (!$u) return [null, response()->json(['ok'=>false,'message'=>'Unauthorized'],200)];
         if (is_null($u->email_verified_at)) return [null, response()->json(['ok'=>false,'message'=>'Email not verified'],200)];
-        if ($u->approval_status !== 'approved') return [null, response()->json(['ok'=>false,'message'=>'Account not approved'],200)];
+        if (($u->approval_status ?? '') !== 'approved') return [null, response()->json(['ok'=>false,'message'=>'Account not approved'],200)];
         return [$u, null];
     }
 
