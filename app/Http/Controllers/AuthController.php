@@ -55,7 +55,7 @@ if (!empty($errors)) {
 
 
         if (User::where('email',$email)->exists()) {
-            return response()->json(['ok'=>false,'message'=>'Email already exists'], 200);
+            return response()->json(['ok'=>false,'message'=>'Email already exists','p' => $p,], 200);
         }
 
         $verifyToken = Str::random(60);
