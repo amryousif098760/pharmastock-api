@@ -39,7 +39,14 @@ Route::post('/inventory/set-minstock', [InventoryController::class, 'setMinStock
     ->middleware(['auth:sanctum', DecryptGcmRequest::class]);
 
 
-Route::post('/orders/create', [OrdersController::class, 'create'])->middleware(DecryptGcmRequest::class);
-Route::post('/orders/create-from-shortages', [OrdersController::class, 'createFromShortages'])->middleware(DecryptGcmRequest::class);
-Route::post('/orders/list', [OrdersController::class, 'list'])->middleware(DecryptGcmRequest::class);
-Route::post('/orders/details', [OrdersController::class, 'details'])->middleware(DecryptGcmRequest::class);
+Route::post('/orders/create', [OrdersController::class, 'create'])
+    ->middleware(['auth:sanctum', DecryptGcmRequest::class]);
+
+Route::post('/orders/create-from-shortages', [OrdersController::class, 'createFromShortages'])
+    ->middleware(['auth:sanctum', DecryptGcmRequest::class]);
+
+Route::post('/orders/list', [OrdersController::class, 'list'])
+    ->middleware(['auth:sanctum', DecryptGcmRequest::class]);
+
+Route::post('/orders/details', [OrdersController::class, 'details'])
+    ->middleware(['auth:sanctum', DecryptGcmRequest::class]);
