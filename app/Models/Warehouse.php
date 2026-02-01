@@ -6,10 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Warehouse extends Model
 {
-    protected $fillable = ['name','city'];
-
-    public function medicines()
-    {
-        return $this->hasMany(Medicine::class);
-    }
+    protected $fillable = ['name', 'lat', 'lng', 'address_text'];
 }

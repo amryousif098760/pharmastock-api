@@ -6,10 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class PharmacyMedicine extends Model
 {
-    protected $fillable = ['pharmacy_id','medicine_id','on_hand','min_stock'];
-
-    public function medicine()
-    {
-        return $this->belongsTo(Medicine::class, 'medicine_id');
-    }
+    protected $fillable = ['pharmacy_id', 'medicine_id', 'min_stock', 'on_hand'];
 }
