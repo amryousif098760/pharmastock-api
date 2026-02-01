@@ -8,6 +8,8 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('pharmacy_medicines')) return;
+
         Schema::create('pharmacy_medicines', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('pharmacy_id');
@@ -18,9 +20,8 @@ return new class extends Migration
 
             $table->unique(['pharmacy_id','medicine_id']);
             $table->foreign('pharmacy_id')->references('id')->on('pharmacies')->onDelete('cascade');
-            $table->foreign('medicine_id')->references('id')->on('medicines')->onDelete('restrict');
+            $table->foreign('medicine_id')->references('id')->on('medicines')->onDelete('cascade');
         });
-
     }
 
     public function down(): void

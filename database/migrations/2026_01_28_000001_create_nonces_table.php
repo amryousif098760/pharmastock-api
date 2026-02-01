@@ -8,15 +8,13 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('nonces')) return;
+
         Schema::create('nonces', function (Blueprint $table) {
             $table->id();
-            $table->string('app_id');
-            $table->string('nonce', 64);
-            $table->unsignedBigInteger('ts');
-            $table->timestamps();
-            $table->unique(['app_id','nonce']);
+            $table->string('nonce', 64)->unique();
+            $table->timestamp('created_at')->useCurrent();
         });
-
     }
 
     public function down(): void
