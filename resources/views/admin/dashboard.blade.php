@@ -93,4 +93,15 @@
             </div>
         </div>
     </div>
+@if (!empty($errors))
+    <div style="background:#300; color:#fff; padding:12px; margin-bottom:12px; border-radius:8px;">
+        <b>Dashboard Debug</b>
+        <ul style="margin:8px 0 0 18px;">
+            @foreach ($errors as $e)
+                <li>{{ $e }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 @endsection
