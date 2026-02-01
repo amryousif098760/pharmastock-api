@@ -10,51 +10,34 @@ class AdminController extends Controller
 {
     private function dec(Request $r): array { return $r->attributes->get('dec', []); }
 
-    private function adminOrFail(Request $r)
-    {
-        $u = $r->attributes->get('auth_user');
-        if (!$u || $u->role !== 'admin') {
-            return [null, response()->json(['ok'=>false,'message'=>'Admin only'], 200)];
-        }
-        return [$u, null];
-    }
-
     public function createWarehouse(Request $request)
     {
-        [$_,$err] = $this->adminOrFail($request);
-        if ($err) return $err;
-
         $p = $this->dec($request);
-        $name = trim($p['name'] ?? '');
-        $city = trim($p['city'] ?? '');
-
-        if (!$name) return response()->json(['ok'=>false,'message'=>'name required'], 200);
-
-        $w = Warehouse::create(['name'=>$name,'city'=>$city]);
+        $name = trim((string)($p['name'] ?? ''));
+        if ($name === '') return response()->json(['ok'=>false,'message'=>'name required'], 200);
+        $w = Warehouse::create([
+            'name'=>$name,
+            'lat'=>(float)($p['lat'] ?? 0),
+            'lng'=>(float)($p['lng'] ?? 0),
+            'address_text'=>trim((string)($p['addressText'] ?? ''))
+        ]);
         return response()->json(['ok'=>true,'data'=>['id'=>$w->id]], 200);
     }
 
     public function createMedicine(Request $request)
     {
-        [$_,$err] = $this->adminOrFail($request);
-        if ($err) return $err;
-
         $p = $this->dec($request);
-
-        $wid = (int)($p['warehouseId'] ?? 0);
-        $name = trim($p['name'] ?? '');
-        $form = trim($p['form'] ?? '');
-        $qty = (int)($p['qty'] ?? 0);
-        $price = (float)($p['price'] ?? 0);
-
-        if ($wid<=0 || !$name) return response()->json(['ok'=>false,'message'=>'Invalid input'], 200);
+        $warehouseId = (int)($p['warehouseId'] ?? 0);
+        $name = trim((string)($p['name'] ?? ''));
+        if ($warehouseId<=0 || $name==='') return response()->json(['ok'=>false,'message'=>'Invalid payload'], 200);
 
         $m = Medicine::create([
-            'warehouse_id'=>$wid,
+            'warehouse_id'=>$warehouseId,
+            'category_id'=>(int)($p['categoryId'] ?? 0) ?: null,
             'name'=>$name,
-            'form'=>$form,
-            'qty'=>$qty,
-            'price'=>$price
+            'price'=>(float)($p['price'] ?? 0),
+            'qty'=>(int)($p['qty'] ?? 0),
+            'image_url'=>trim((string)($p['imageUrl'] ?? ''))
         ]);
 
         return response()->json(['ok'=>true,'data'=>['id'=>$m->id]], 200);
@@ -62,37 +45,30 @@ class AdminController extends Controller
 
     public function updateMedicine(Request $request)
     {
-        [$_,$err] = $this->adminOrFail($request);
-        if ($err) return $err;
-
         $p = $this->dec($request);
         $id = (int)($p['id'] ?? 0);
-
-        $m = Medicine::find($id);
+        $m = Medicine::where('id',$id)->first();
         if (!$m) return response()->json(['ok'=>false,'message'=>'Not found'], 200);
 
-        foreach (['name','form'] as $f) {
-            if (array_key_exists($f, $p)) $m->$f = (string)$p[$f];
+        foreach (['name','imageUrl'] as $k) {
+            if (array_key_exists($k, $p)) {
+                $val = trim((string)$p[$k]);
+                if ($k==='imageUrl') $m->image_url = $val; else $m->name = $val;
+            }
         }
-        if (array_key_exists('qty',$p)) $m->qty = (int)$p['qty'];
         if (array_key_exists('price',$p)) $m->price = (float)$p['price'];
-
+        if (array_key_exists('qty',$p)) $m->qty = (int)$p['qty'];
+        if (array_key_exists('categoryId',$p)) $m->category_id = (int)$p['categoryId'] ?: null;
         $m->save();
-        return response()->json(['ok'=>true,'message'=>'Updated'], 200);
+
+        return response()->json(['ok'=>true], 200);
     }
 
     public function deleteMedicine(Request $request)
     {
-        [$_,$err] = $this->adminOrFail($request);
-        if ($err) return $err;
-
         $p = $this->dec($request);
         $id = (int)($p['id'] ?? 0);
-
-        $m = Medicine::find($id);
-        if (!$m) return response()->json(['ok'=>false,'message'=>'Not found'], 200);
-
-        $m->delete();
-        return response()->json(['ok'=>true,'message'=>'Deleted'], 200);
+        Medicine::where('id',$id)->delete();
+        return response()->json(['ok'=>true], 200);
     }
 }
