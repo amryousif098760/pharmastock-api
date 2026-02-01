@@ -18,7 +18,7 @@
             <input class="form-control" name="q" value="{{ $q }}" placeholder="Search name">
         </div>
         <div class="col-12 col-md-3">
-            <select class="form-select" name="warehouse">
+            <select class="form-select" name="warehouse_id">
                 <option value="">All warehouses</option>
                 @foreach($warehouses as $w)
                     <option value="{{ $w->id }}" @selected((string)$w->id === (string)$warehouseId)>{{ $w->name }}</option>
@@ -26,7 +26,7 @@
             </select>
         </div>
         <div class="col-12 col-md-3">
-            <select class="form-select" name="category">
+            <select class="form-select" name="category_id">
                 <option value="">All categories</option>
                 @foreach($categories as $c)
                     <option value="{{ $c->id }}" @selected((string)$c->id === (string)$categoryId)>{{ $c->name }}</option>
@@ -49,7 +49,9 @@
                         <th>Category</th>
                         <th class="text-end">Price</th>
                         <th class="text-end">Qty</th>
-                        <th class="text-center">Featured</th>
+                        @if(!empty($hasFeatured))
+                            <th class="text-center">Featured</th>
+                        @endif
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>
@@ -70,13 +72,15 @@
                             <td>{{ $m->category?->name }}</td>
                             <td class="text-end">{{ number_format((float)$m->price,2) }}</td>
                             <td class="text-end">{{ (int)$m->qty }}</td>
-                            <td class="text-center">
-                                @if((int)$m->is_featured === 1)
-                                    <span class="badge text-bg-success">Yes</span>
-                                @else
-                                    <span class="badge text-bg-secondary">No</span>
-                                @endif
-                            </td>
+                            @if(!empty($hasFeatured))
+                                <td class="text-center">
+                                    @if((int)($m->is_featured ?? 0) === 1)
+                                        <span class="badge text-bg-success">Yes</span>
+                                    @else
+                                        <span class="badge text-bg-secondary">No</span>
+                                    @endif
+                                </td>
+                            @endif
                             <td class="text-end">
                                 <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.medicines.edit',$m) }}"><i class="bi bi-pencil"></i></a>
                                 <form class="d-inline" method="post" action="{{ route('admin.medicines.destroy',$m) }}" onsubmit="return confirm('Delete?')">
@@ -87,7 +91,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="8" class="text-center text-muted py-4">No medicines</td></tr>
+                        <tr><td colspan="{{ !empty($hasFeatured) ? 8 : 7 }}" class="text-center text-muted py-4">No medicines</td></tr>
                     @endforelse
                 </tbody>
             </table>
