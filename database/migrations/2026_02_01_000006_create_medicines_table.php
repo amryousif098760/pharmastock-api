@@ -18,6 +18,7 @@ return new class extends Migration
                 $table->integer('qty')->default(0);
                 $table->decimal('price', 12, 2)->default(0);
                 $table->string('image_url')->nullable();
+                $table->boolean('is_featured')->default(false);
                 $table->timestamps();
 
                 $table->index(['warehouse_id', 'category_id']);
@@ -32,6 +33,7 @@ return new class extends Migration
             if (!Schema::hasColumn('medicines', 'image_url')) $table->string('image_url')->nullable();
             if (!Schema::hasColumn('medicines', 'price')) $table->decimal('price', 12, 2)->default(0);
             if (!Schema::hasColumn('medicines', 'qty')) $table->integer('qty')->default(0);
+            if (!Schema::hasColumn('medicines', 'is_featured')) $table->boolean('is_featured')->default(false);
         });
     }
 
