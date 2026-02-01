@@ -18,8 +18,9 @@ Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logo
 
 Route::middleware(['auth', 'is_admin'])->group(function () {
 
-    Route::get('/dashboard', fn() => 'OK')->name('admin.dashboard')->middleware(['auth','is_admin']);
-
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('admin.dashboard')
+    ->middleware(['auth','is_admin']);
 
     Route::get('/banners', [BannersController::class, 'index'])->name('admin.banners.index');
     Route::get('/banners/create', [BannersController::class, 'create'])->name('admin.banners.create');
