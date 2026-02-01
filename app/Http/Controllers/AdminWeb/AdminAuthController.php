@@ -17,27 +17,40 @@ class AdminAuthController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $data = $request->validate([
-            'email' => ['required','email'],
-            'password' => ['required','string'],
-        ]);
+{
+    $data = $request->validate([
+        'email' => ['required','email'],
+        'password' => ['required','string'],
+    ]);
 
-        if (!Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
-            return back()->withErrors(['email' => 'Invalid credentials'])->withInput();
-        }
+    $email = strtolower(trim($data['email']));
 
-        $request->session()->regenerate();
-        $u = $request->user();
-        if (($u->role ?? 'pharmacy') !== 'admin') {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            return back()->withErrors(['email' => 'Not allowed'])->withInput();
-        }
+    $u = \App\Models\User::where('email', $email)->first();
 
-        return redirect()->route('admin.dashboard');
+    if (!$u) {
+        return back()->withErrors(['email' => 'User not found'])->withInput();
     }
+
+    if (!\Illuminate\Support\Facades\Hash::check($data['password'], $u->password)) {
+        return back()->withErrors(['email' => 'Password mismatch (hash)'])->withInput();
+    }
+
+    if (!\Illuminate\Support\Facades\Auth::attempt(['email' => $email, 'password' => $data['password']])) {
+        return back()->withErrors(['email' => 'Auth::attempt failed (guard/provider)'])->withInput();
+    }
+
+    $request->session()->regenerate();
+
+    $u = $request->user();
+    if (($u->role ?? 'pharmacy') !== 'admin') {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return back()->withErrors(['email' => 'Not allowed'])->withInput();
+    }
+
+    return redirect()->route('admin.dashboard');
+}
 
     public function logout(Request $request)
     {
