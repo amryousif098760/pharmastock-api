@@ -9,41 +9,43 @@ use App\Models\Medicine;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Warehouse;
-use Illuminate\Support\Facades\Schema;
-
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class DashboardController extends Controller
 {
+    public function index()
+    {
+        try {
+            $stats = [
+                'users'       => User::count(),
+                'pharmacies'  => User::where('role','!=','admin')->count(),
+                'pending'     => User::where('approval_status','pending')->count(),
+                'warehouses'  => Warehouse::count(),
+                'medicines'   => Medicine::count(),
+                'orders'      => Order::count(),
+                'banners'     => Banner::count(),
+                'categories'  => Category::count(),
+            ];
 
-public function index()
-{
-    $stats = [];
+            $recentOrders = Order::orderByDesc('id')->limit(10)->get();
+            $recentUsers  = User::orderByDesc('id')->limit(10)->get();
 
-    if (Schema::hasTable('users')) {
-        $stats['users'] = User::count();
-        $stats['pharmacies'] = Schema::hasColumn('users','role')
-            ? User::where('role','!=','admin')->count()
-            : 0;
-        $stats['pending'] = Schema::hasColumn('users','approval_status')
-            ? User::where('approval_status','pending')->count()
-            : 0;
+            return view('admin.dashboard', compact('stats','recentOrders','recentUsers'));
+
+        } catch (Throwable $e) {
+
+            Log::error('Admin Dashboard Error', [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+            ]);
+
+            return response()->view('admin.error', [
+                'error' => $e->getMessage(),
+                'file'  => $e->getFile(),
+                'line'  => $e->getLine(),
+            ], 500);
+        }
     }
-
-    $stats['warehouses'] = Schema::hasTable('warehouses') ? Warehouse::count() : 0;
-    $stats['medicines']  = Schema::hasTable('medicines')  ? Medicine::count()  : 0;
-    $stats['orders']     = Schema::hasTable('orders')     ? Order::count()     : 0;
-    $stats['banners']    = Schema::hasTable('banners')    ? Banner::count()    : 0;
-    $stats['categories'] = Schema::hasTable('categories') ? Category::count()  : 0;
-
-    $recentOrders = Schema::hasTable('orders')
-        ? Order::orderByDesc('id')->limit(10)->get()
-        : collect();
-
-    $recentUsers = Schema::hasTable('users')
-        ? User::orderByDesc('id')->limit(10)->get()
-        : collect();
-
-    return view('admin.dashboard', compact('stats','recentOrders','recentUsers'));
-}
-
 }
