@@ -10,50 +10,49 @@ use App\Http\Controllers\AdminWeb\MedicinesController;
 use App\Http\Controllers\AdminWeb\OrdersController;
 use App\Http\Controllers\AdminWeb\PharmaciesController;
 
-Route::get('/', fn() => redirect()->route('admin.login'));
+Route::get('/', fn () => redirect()->route('admin.login'));
 
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/login', [AdminAuthController::class, 'show'])->name('login');
-    Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post');
-    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+Route::get('/login', [AdminAuthController::class, 'show'])->name('admin.login');
+Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.post');
+Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
-    Route::middleware(['auth', 'is_admin'])->group(function () {
-        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+Route::middleware(['auth', 'is_admin'])->group(function () {
 
-        Route::get('/banners', [BannersController::class, 'index'])->name('banners.index');
-        Route::get('/banners/create', [BannersController::class, 'create'])->name('banners.create');
-        Route::post('/banners', [BannersController::class, 'store'])->name('banners.store');
-        Route::get('/banners/{banner}/edit', [BannersController::class, 'edit'])->name('banners.edit');
-        Route::put('/banners/{banner}', [BannersController::class, 'update'])->name('banners.update');
-        Route::delete('/banners/{banner}', [BannersController::class, 'destroy'])->name('banners.destroy');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
-        Route::get('/categories', [CategoriesController::class, 'index'])->name('categories.index');
-        Route::get('/categories/create', [CategoriesController::class, 'create'])->name('categories.create');
-        Route::post('/categories', [CategoriesController::class, 'store'])->name('categories.store');
-        Route::get('/categories/{category}/edit', [CategoriesController::class, 'edit'])->name('categories.edit');
-        Route::put('/categories/{category}', [CategoriesController::class, 'update'])->name('categories.update');
-        Route::delete('/categories/{category}', [CategoriesController::class, 'destroy'])->name('categories.destroy');
+    Route::get('/banners', [BannersController::class, 'index'])->name('admin.banners.index');
+    Route::get('/banners/create', [BannersController::class, 'create'])->name('admin.banners.create');
+    Route::post('/banners', [BannersController::class, 'store'])->name('admin.banners.store');
+    Route::get('/banners/{banner}/edit', [BannersController::class, 'edit'])->name('admin.banners.edit');
+    Route::put('/banners/{banner}', [BannersController::class, 'update'])->name('admin.banners.update');
+    Route::delete('/banners/{banner}', [BannersController::class, 'destroy'])->name('admin.banners.destroy');
 
-        Route::get('/warehouses', [WarehousesController::class, 'index'])->name('warehouses.index');
-        Route::get('/warehouses/create', [WarehousesController::class, 'create'])->name('warehouses.create');
-        Route::post('/warehouses', [WarehousesController::class, 'store'])->name('warehouses.store');
-        Route::get('/warehouses/{warehouse}/edit', [WarehousesController::class, 'edit'])->name('warehouses.edit');
-        Route::put('/warehouses/{warehouse}', [WarehousesController::class, 'update'])->name('warehouses.update');
-        Route::delete('/warehouses/{warehouse}', [WarehousesController::class, 'destroy'])->name('warehouses.destroy');
+    Route::get('/categories', [CategoriesController::class, 'index'])->name('admin.categories.index');
+    Route::get('/categories/create', [CategoriesController::class, 'create'])->name('admin.categories.create');
+    Route::post('/categories', [CategoriesController::class, 'store'])->name('admin.categories.store');
+    Route::get('/categories/{category}/edit', [CategoriesController::class, 'edit'])->name('admin.categories.edit');
+    Route::put('/categories/{category}', [CategoriesController::class, 'update'])->name('admin.categories.update');
+    Route::delete('/categories/{category}', [CategoriesController::class, 'destroy'])->name('admin.categories.destroy');
 
-        Route::get('/medicines', [MedicinesController::class, 'index'])->name('medicines.index');
-        Route::get('/medicines/create', [MedicinesController::class, 'create'])->name('medicines.create');
-        Route::post('/medicines', [MedicinesController::class, 'store'])->name('medicines.store');
-        Route::get('/medicines/{medicine}/edit', [MedicinesController::class, 'edit'])->name('medicines.edit');
-        Route::put('/medicines/{medicine}', [MedicinesController::class, 'update'])->name('medicines.update');
-        Route::delete('/medicines/{medicine}', [MedicinesController::class, 'destroy'])->name('medicines.destroy');
+    Route::get('/warehouses', [WarehousesController::class, 'index'])->name('admin.warehouses.index');
+    Route::get('/warehouses/create', [WarehousesController::class, 'create'])->name('admin.warehouses.create');
+    Route::post('/warehouses', [WarehousesController::class, 'store'])->name('admin.warehouses.store');
+    Route::get('/warehouses/{warehouse}/edit', [WarehousesController::class, 'edit'])->name('admin.warehouses.edit');
+    Route::put('/warehouses/{warehouse}', [WarehousesController::class, 'update'])->name('admin.warehouses.update');
+    Route::delete('/warehouses/{warehouse}', [WarehousesController::class, 'destroy'])->name('admin.warehouses.destroy');
 
-        Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
-        Route::get('/orders/{order}', [OrdersController::class, 'show'])->name('orders.show');
-        Route::put('/orders/{order}', [OrdersController::class, 'update'])->name('orders.update');
+    Route::get('/medicines', [MedicinesController::class, 'index'])->name('admin.medicines.index');
+    Route::get('/medicines/create', [MedicinesController::class, 'create'])->name('admin.medicines.create');
+    Route::post('/medicines', [MedicinesController::class, 'store'])->name('admin.medicines.store');
+    Route::get('/medicines/{medicine}/edit', [MedicinesController::class, 'edit'])->name('admin.medicines.edit');
+    Route::put('/medicines/{medicine}', [MedicinesController::class, 'update'])->name('admin.medicines.update');
+    Route::delete('/medicines/{medicine}', [MedicinesController::class, 'destroy'])->name('admin.medicines.destroy');
 
-        Route::get('/pharmacies', [PharmaciesController::class, 'index'])->name('pharmacies.index');
-        Route::get('/pharmacies/{user}', [PharmaciesController::class, 'show'])->name('pharmacies.show');
-        Route::put('/pharmacies/{user}', [PharmaciesController::class, 'update'])->name('pharmacies.update');
-    });
+    Route::get('/orders', [OrdersController::class, 'index'])->name('admin.orders.index');
+    Route::get('/orders/{order}', [OrdersController::class, 'show'])->name('admin.orders.show');
+    Route::put('/orders/{order}', [OrdersController::class, 'update'])->name('admin.orders.update');
+
+    Route::get('/pharmacies', [PharmaciesController::class, 'index'])->name('admin.pharmacies.index');
+    Route::get('/pharmacies/{user}', [PharmaciesController::class, 'show'])->name('admin.pharmacies.show');
+    Route::put('/pharmacies/{user}', [PharmaciesController::class, 'update'])->name('admin.pharmacies.update');
 });
