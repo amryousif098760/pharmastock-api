@@ -34,18 +34,17 @@ class DashboardController extends Controller
             return view('admin.dashboard', compact('stats','recentOrders','recentUsers'));
 
         } catch (Throwable $e) {
-
             Log::error('Admin Dashboard Error', [
                 'message' => $e->getMessage(),
                 'file'    => $e->getFile(),
                 'line'    => $e->getLine(),
+                'trace'   => substr($e->getTraceAsString(), 0, 2000),
             ]);
 
-            return response()->view('admin.error', [
-                'error' => $e->getMessage(),
-                'file'  => $e->getFile(),
-                'line'  => $e->getLine(),
-            ], 500);
+            return response(
+                "DASHBOARD ERROR:\n".$e->getMessage()."\n".$e->getFile().":".$e->getLine(),
+                500
+            )->header('Content-Type', 'text/plain');
         }
     }
 }
