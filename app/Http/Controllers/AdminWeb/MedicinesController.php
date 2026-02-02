@@ -47,7 +47,8 @@ class MedicinesController extends Controller
         $categories = $catQuery->orderBy('name')->get();
 
         $hasFeatured = Schema::hasTable('medicines') && Schema::hasColumn('medicines', 'is_featured');
-        return view('admin.medicines.form', compact('medicine','warehouses','categories','hasFeatured'));
+        return view('admin.medicines.form', compact('medicine','warehouses','categories','hasFeatured') + ['mode' => 'create']);
+
     }
 
     public function store(Request $request)
@@ -80,7 +81,8 @@ class MedicinesController extends Controller
         $categories = $catQuery->orderBy('name')->get();
 
         $hasFeatured = Schema::hasTable('medicines') && Schema::hasColumn('medicines', 'is_featured');
-        return view('admin.medicines.form', compact('medicine','warehouses','categories','hasFeatured'));
+        return view('admin.medicines.form', compact('medicine','warehouses','categories','hasFeatured') + ['mode' => 'edit']);
+
     }
 
     public function update(Request $request, Medicine $medicine)
