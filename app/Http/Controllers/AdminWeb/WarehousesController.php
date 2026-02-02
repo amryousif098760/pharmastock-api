@@ -22,7 +22,7 @@ class WarehousesController extends Controller
     public function create()
     {
         $warehouse = new Warehouse();
-        return view('admin.warehouses.form', compact('warehouse'));
+        return view('admin.warehouses.form', compact('warehouse')+ ['mode' => 'create']);
     }
 
     public function store(Request $request)
@@ -39,7 +39,8 @@ class WarehousesController extends Controller
 
     public function edit(Warehouse $warehouse)
     {
-        return view('admin.warehouses.form', compact('warehouse'));
+        return view('admin.warehouses.form', compact('warehouse')+ ['mode' => 'edit']);
+
     }
 
     public function update(Request $request, Warehouse $warehouse)
