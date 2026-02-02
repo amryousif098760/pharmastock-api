@@ -8,7 +8,7 @@
             <div class="h4 fw-black mb-0">{{ $mode === 'create' ? 'Create Banner' : 'Edit Banner' }}</div>
             <div class="text-muted">Configure banner appearance and action.</div>
         </div>
-        <a class="btn btn-outline-secondary" href="{{ route('admin.banners') }}"><i class="bi bi-arrow-left me-1"></i>Back</a>
+        <a class="btn btn-outline-secondary" href="{{ route('admin.banners.index') }}"><i class="bi bi-arrow-left me-1"></i>Back</a>
     </div>
 
     @if($errors->any())
