@@ -55,5 +55,6 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
 
     Route::get('/pharmacies', [PharmaciesController::class, 'index'])->name('admin.pharmacies.index');
     Route::get('/pharmacies/{user}', [PharmaciesController::class, 'show'])->name('admin.pharmacies.show');
-    Route::put('/pharmacies/{user}', [PharmaciesController::class, 'update'])->name('admin.pharmacies.update');
+    Route::post('/pharmacies/{user}/approve', [PharmaciesController::class, 'approve'])->name('admin.pharmacies.approve');
+    Route::post('/pharmacies/{user}/reject', [PharmaciesController::class, 'reject'])->name('admin.pharmacies.reject');
 });
