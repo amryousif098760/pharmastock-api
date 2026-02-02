@@ -56,7 +56,6 @@
                 </div>
                 <button class="btn btn-primary" type="submit"><i class="bi bi-arrow-right-circle me-1"></i>Continue</button>
             </form>
-            <div class="small text-muted mt-3">Default seeded admin: admin@dawaplus.local / Admin@12345</div>
         </div>
     </div>
 </div>
