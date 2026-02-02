@@ -23,7 +23,7 @@ class BannersController extends Controller
     public function create()
     {
         $banner = new Banner();
-        return view('admin.banners.form', compact('banner'));
+        return view('admin.banners.form', compact('banner')+ ['mode' => 'create']);
     }
 
     public function store(Request $request)
@@ -45,7 +45,8 @@ class BannersController extends Controller
 
     public function edit(Banner $banner)
     {
-        return view('admin.banners.form', compact('banner'));
+        return view('admin.banners.form', compact('banner')+ ['mode' => 'edit']);
+
     }
 
     public function update(Request $request, Banner $banner)
