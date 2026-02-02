@@ -103,16 +103,6 @@
             @if(session('ok'))
                 <div class="alert alert-success card-glow border-0">{{ session('ok') }}</div>
             @endif
-            @if($errors->any())
-                <div class="alert alert-danger card-glow border-0">
-                    <div class="fw-bold mb-2">Fix the following</div>
-                    <ul class="mb-0">
-                        @foreach($errors->all() as $e)
-                            <li>{{ $e }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
             @yield('content')
         </div>
     </main>
