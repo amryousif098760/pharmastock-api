@@ -10,6 +10,17 @@ use App\Http\Controllers\AdminWeb\MedicinesController;
 use App\Http\Controllers\AdminWeb\OrdersController;
 use App\Http\Controllers\AdminWeb\PharmaciesController;
 
+Route::get('/__err', function () {
+    try {
+        return app(\App\Http\Controllers\AdminWeb\MedicinesController::class)->index(request());
+    } catch (\Throwable $e) {
+        return response(
+            "ERR:\n".$e->getMessage()."\n".$e->getFile().":".$e->getLine(),
+            500
+        )->header('Content-Type','text/plain');
+    }
+});
+
 Route::get('/', fn () => redirect()->route('admin.login'));
 
 Route::get('/login', [AdminAuthController::class, 'show'])->name('admin.login');
