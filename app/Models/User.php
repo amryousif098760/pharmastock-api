@@ -13,4 +13,9 @@ class User extends Authenticatable
     protected $fillable = ['name','email','phone','password','approval_status'];
     protected $hidden = ['password','remember_token'];
     protected $casts = ['email_verified_at' => 'datetime'];
+
+    public function pharmacy()
+    {
+        return $this->hasOne(\App\Models\Pharmacy::class, 'user_id');
+    }
 }
