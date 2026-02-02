@@ -36,13 +36,16 @@ class PharmaciesController extends Controller
         return view('admin.pharmacies.show', compact('user'));
     }
 
-    public function updateApproval(Request $request, User $user)
-    {
-        $data = $request->validate([
-            'approval_status' => ['required','string','max:30'],
-        ]);
-        $user->approval_status = $data['approval_status'];
-        $user->save();
-        return redirect()->route('admin.pharmacies.show',$user)->with('ok','Updated');
-    }
+    public function approve(User $user)
+{
+    $user->update(['approval_status' => 'approved']);
+    return back()->with('ok','Approved');
+}
+
+public function reject(User $user)
+{
+    $user->update(['approval_status' => 'rejected']);
+    return back()->with('ok','Rejected');
+}
+
 }
