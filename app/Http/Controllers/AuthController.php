@@ -44,7 +44,7 @@ class AuthController extends Controller
             'email'=>$email,
             'phone'=>$phone,
             'password'=>Hash::make($password),
-            'role'=>'pharmacist',
+            'role'=>'pharmacy',
             'approval_status'=>'pending',
             'email_verify_token'=>$verifyToken,
         ]);
