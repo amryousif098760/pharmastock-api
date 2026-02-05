@@ -14,7 +14,9 @@ use App\Http\Controllers\AdminWeb\PharmaciesController;
 
 Route::get('/', fn () => redirect()->route('admin.login'));
 
-Route::get('/login', [AdminAuthController::class, 'show'])->name('admin.login');
+Route::get('/login', [AdminAuthController::class, 'show'])
+    ->name('admin.login')
+    ->name('login');
 Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.post');
 Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
